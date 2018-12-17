@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import  'home.dart';
+import 'package:feed_pet/model/feeding_repository.dart' as feedingRepository;
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: Home(data:feedingRepository.FeedingRepository.fetchPost()),
 
     );
   }

@@ -4,11 +4,17 @@ import 'package:feed_pet/model/feed_item.dart';
 
 class CustomCard extends StatelessWidget {
 
-  final FeedItem feedItem;
+  final String petName;
+  final String grams;
+  final String fromTime;
+  final String toTime;
   const CustomCard({
-    @required this.feedItem,
-  })  : assert(feedItem != null);
+    @required this.petName,
+    @required this.fromTime,
+    @required this.grams,
+    @required this.toTime,
 
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +40,7 @@ class CustomCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),),
                     SizedBox(width: 5,),
-                    Text(this.feedItem.petName)
+                    Text(this.petName)
                   ],
 
                 ),
@@ -45,7 +51,7 @@ class CustomCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),),
                     SizedBox(width: 5,),
-                    Text(this.feedItem.grams)
+                    Text(this.grams)
                   ],
 
                 ),
@@ -64,7 +70,7 @@ class CustomCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),),
                     SizedBox(width: 5,),
-                    Text(this.feedItem.fromTime)
+                    Text(this.fromTime)
                   ],
 
                 ),
@@ -75,7 +81,7 @@ class CustomCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),),
                     SizedBox(width: 5,),
-                    Text(this.feedItem.toTime)
+                    Text(this.toTime)
                   ],
 
                 ),

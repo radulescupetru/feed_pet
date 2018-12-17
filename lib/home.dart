@@ -1,26 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:feed_pet/customs/custom_card.dart';
 import 'model/feeding_repository.dart' as feedingRepository;
-
-
-//class _HomeState extends State<Home> {
-//  List<CustomCard> customCards;
-//
-//  @override
-//  void initState() {
-//    super.initState();
-//    customCards = feedingRepository.FeedingRepository.loadFeedItems();
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    // TODO: implement build
-//    return null;
-//  }
-//}
-
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class Home extends StatelessWidget {
+  final Future<List<dynamic>> data;
+  Home({Key key, this.data}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return new Stack(
@@ -71,11 +55,25 @@ class Home extends StatelessWidget {
                           ),
                         )),
                     Expanded(
-                      child: ListView(
-                        children:
-                          feedingRepository.FeedingRepository.loadFeedItems()
+                      child:
+                            Center(
+                              child: FutureBuilder<List<dynamic>>(
+                                future: data,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    final items = feedingRepository.FeedingRepository.getCardsFromData(snapshot.data);
+                                  return ListView(
+                                    children:items
+                                  );
+                                  } else if (snapshot.hasError) {
+                                    return Text("Error");
+                                  }
+                                  // By default, show a loading spinner
+                                  return CircularProgressIndicator();
+                                },
+                              ),
+                            ),
                       ),
-                    ),
                     Container(
                       margin: EdgeInsets.fromLTRB(0,10,0,10),
                       child:
@@ -93,7 +91,9 @@ class Home extends StatelessWidget {
                               fontWeight: FontWeight.w800
                             ),),
                             elevation: 4,
-                            onPressed: (){},
+                            onPressed: (){
+                              feedingRepository.FeedingRepository.feedNow();
+                            },
                             color: Colors.blueAccent,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                             padding: EdgeInsets.all(20),
@@ -108,9 +108,6 @@ class Home extends StatelessWidget {
             )
           ],
         ),
-        // The card widget with top padding,
-        // incase if you wanted bottom padding to work,
-        // set the `alignment` of container to Alignment.bottomCenter
         new Container(
           alignment: Alignment.topCenter,
           padding: new EdgeInsets.only(
@@ -134,16 +131,7 @@ class Home extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          new ClipRRect(
-                            borderRadius: new BorderRadius.circular(54.0),
-                            child: Image.network(
-                              'http://www.placehold.it/70x70',
-                              height: 70.0,
-                              width: 70.0,
-                            ),
-                          ),
-                          SizedBox(width: 10,),
-                          Text("Radulescu Petru",
+                          Text("Radulescu Petru's pets",
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 18
@@ -154,12 +142,18 @@ class Home extends StatelessWidget {
                   ),
                   Center(
                     child:
-                      Text("35%",
-                        style: TextStyle(
-                          fontSize: 35,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.blueAccent
-                        ),)
+                    CircularPercentIndicator(
+                      radius: 60.0,
+                      lineWidth: 5.0,
+                      percent: 0.35,
+                      center: new Text("35%"),
+                      progressColor: Colors.blueAccent,
+                      footer: new Text(
+                        "Food container status",
+                        style:
+                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+                      ),
+                    )
                   )
                 ],
               ),
@@ -170,5 +164,7 @@ class Home extends StatelessWidget {
       ],
     );
   }
+
+
 }
 
