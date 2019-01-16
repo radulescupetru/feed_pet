@@ -8,6 +8,23 @@ class Home extends StatelessWidget {
 
   Home({Key key, this.data, this.containerPercent}) : super(key: key);
 
+  void _showAlertDialog(BuildContext context){
+    AlertDialog dialog = AlertDialog(
+      title: Text('Feed now info'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Text('Your pets are now fed(up with you!!!)'),
+
+          ],
+        ),
+      ),
+      actions: <Widget>[
+      ],
+    );
+    showDialog(context: context, builder: (BuildContext context) => dialog);
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Stack(
@@ -88,6 +105,7 @@ class Home extends StatelessWidget {
                             elevation: 4,
                             onPressed: () {
                               feedingRepository.FeedingRepository.feedNow();
+                              _showAlertDialog(context);
                             },
                             color: Colors.blueAccent,
                             shape: RoundedRectangleBorder(
@@ -122,7 +140,7 @@ class Home extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          "Radulescu Petru's pets",
+                          "MY PETS",
                           style: TextStyle(
                               fontWeight: FontWeight.w800, fontSize: 18),
                         )
@@ -138,7 +156,8 @@ class Home extends StatelessWidget {
                                 radius: 60.0,
                                 lineWidth: 5.0,
                                 percent: snapshot.data,
-                                center: new Text((snapshot.data*100).toString()+"%"),
+                                center: new Text(
+                                    (snapshot.data * 100).toString() + "%"),
                                 progressColor: Colors.blueAccent,
                                 footer: new Text(
                                   "Food container status",
@@ -149,8 +168,7 @@ class Home extends StatelessWidget {
                               );
                             } else if (snapshot.hasError) {
                               return Text("0");
-                            }
-                            else{
+                            } else {
                               return CircularProgressIndicator();
                             }
                           }))
