@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(data:feedingRepository.FeedingRepository.fetchPost()),
+      home: Home(data:feedingRepository.FeedingRepository.fetchPost(),containerPercent:feedingRepository.FeedingRepository.getContainerPercent()),
 
     );
   }

@@ -4,7 +4,10 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class Home extends StatelessWidget {
   final Future<List<dynamic>> data;
-  Home({Key key, this.data}) : super(key: key);
+  final Future<double> containerPercent;
+
+  Home({Key key, this.data, this.containerPercent}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return new Stack(
@@ -20,13 +23,12 @@ class Home extends StatelessWidget {
                   'FEEDPET',
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 24,
-                    decoration: TextDecoration.none
-                  ),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 24,
+                      decoration: TextDecoration.none),
                 ),
-
               ),
             ),
             new Container(
@@ -35,17 +37,14 @@ class Home extends StatelessWidget {
               padding: new EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * 0.15,
                   right: 20.0,
-                  left: 20.0
-              ),
-              child:
-              Column(
+                  left: 20.0),
+              child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget> [
+                  children: <Widget>[
                     Container(
-                      margin: EdgeInsets.fromLTRB(5,10,0,0),
-                        child:
-                        Text(
+                        margin: EdgeInsets.fromLTRB(5, 10, 0, 0),
+                        child: Text(
                           "Eating stats",
                           textAlign: TextAlign.left,
                           style: TextStyle(
@@ -55,56 +54,48 @@ class Home extends StatelessWidget {
                           ),
                         )),
                     Expanded(
-                      child:
-                            Center(
-                              child: FutureBuilder<List<dynamic>>(
-                                future: data,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    final items = feedingRepository.FeedingRepository.getCardsFromData(snapshot.data);
-                                  return ListView(
-                                    children:items
-                                  );
-                                  } else if (snapshot.hasError) {
-                                    return Text("Error");
-                                  }
-                                  // By default, show a loading spinner
-                                  return CircularProgressIndicator();
-                                },
-                              ),
-                            ),
+                      child: Center(
+                        child: FutureBuilder<List<dynamic>>(
+                          future: data,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final items = feedingRepository.FeedingRepository
+                                  .getCardsFromData(snapshot.data);
+                              return ListView(children: items);
+                            } else if (snapshot.hasError) {
+                              return Text("No internet connection");
+                            }
+                            // By default, show a loading spinner
+                            return CircularProgressIndicator();
+                          },
+                        ),
                       ),
+                    ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(0,10,0,10),
-                      child:
-                        SizedBox(
+                        margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: SizedBox(
                           width: double.infinity,
                           height: 50,
-
-                          child:
-                          RaisedButton(
-                            child: Text("Feed now",
+                          child: RaisedButton(
+                            child: Text(
+                              "Feed now",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800
-                            ),),
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w800),
+                            ),
                             elevation: 4,
-                            onPressed: (){
+                            onPressed: () {
                               feedingRepository.FeedingRepository.feedNow();
                             },
                             color: Colors.blueAccent,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
                             padding: EdgeInsets.all(20),
-
                           ),
-                        )
-                    )
-
-
-                  ]
-              ),
+                        ))
+                  ]),
             )
           ],
         ),
@@ -125,46 +116,50 @@ class Home extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                    child: 
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text("Radulescu Petru's pets",
+                      child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Radulescu Petru's pets",
                           style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 18
-                          ),)
-                        ],
-                      ),
-                    )
-                  ),
+                              fontWeight: FontWeight.w800, fontSize: 18),
+                        )
+                      ],
+                    ),
+                  )),
                   Center(
-                    child:
-                    CircularPercentIndicator(
-                      radius: 60.0,
-                      lineWidth: 5.0,
-                      percent: 0.35,
-                      center: new Text("35%"),
-                      progressColor: Colors.blueAccent,
-                      footer: new Text(
-                        "Food container status",
-                        style:
-                        new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
-                      ),
-                    )
-                  )
+                      child: FutureBuilder<double>(
+                          future: containerPercent,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return CircularPercentIndicator(
+                                radius: 60.0,
+                                lineWidth: 5.0,
+                                percent: snapshot.data,
+                                center: new Text((snapshot.data*100).toString()+"%"),
+                                progressColor: Colors.blueAccent,
+                                footer: new Text(
+                                  "Food container status",
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17.0),
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text("0");
+                            }
+                            else{
+                              return CircularProgressIndicator();
+                            }
+                          }))
                 ],
               ),
             ),
           ),
         ),
-
       ],
     );
   }
-
-
 }
-
